@@ -8,7 +8,8 @@ class User(db.Model):
     name = db.Column(db.String(80), unique=False, nullable=False)
     surname = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-
+    favorites = db.relationship('Favorites', backref='user', lazy=True)
+    
     def __repr__(self):
         return '<User %r>' % self.id
 
@@ -27,7 +28,7 @@ class Character(db.Model):
     name = db.Column(db.String (250))
     birth_year = db.Column(db.String (250))
     gender = db.Column(db.String (250))
-
+    favorites = db.relationship('Favorites', backref='character', lazy=True)
     def __repr__(self):
         return '<Character %r>' % self.id
 
@@ -47,7 +48,7 @@ class Planet(db.Model):
     name = db.Column(db.String (250))
     diameter = db.Column(db.String (250))
     rotation_period = db.Column(db.String (250))
-    
+    favorites = db.relationship('Favorites', backref='planet', lazy=True)
     def __repr__(self):
         return '<Planet %r>' % self.id
 
@@ -65,7 +66,8 @@ class Vehicle(db.Model):
     name = db.Column(db.String (250))
     model = db.Column(db.String (250))
     vehicle_class = db.Column(db.String (250))
-
+    favorites = db.relationship('Favorites', backref='vehicle', lazy=True)
+    
     def __repr__(self):
         return '<Vehicle %r>' % self.id
 
@@ -85,7 +87,7 @@ class Favorites(db.Model):
     planet_id = db.Column(db.Integer, db.ForeignKey('planet.id'))
     vehicle_id= db.Column(db.Integer, db.ForeignKey('vehicle.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    #user = db.relationship(User)
+   
     
     def __repr__(self):
         return '<Favorites %r>' % self.id

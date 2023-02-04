@@ -114,7 +114,186 @@ def get_info_character(character_id):
     print(character.serialize())
     return jsonify(character.serialize()), 200
 
+@app.route('/user/<int:user_id>/favorites', methods=['GET'])
+def get_user_favorites(user_id):
+ 
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        favorites = Favorites.query.filter_by(user_id=user_id).all()
+        results_favorites = list(map(lambda item: item.serialize(),favorites))
+        return jsonify(results_favorites), 200
     
+    response_body={
+        "msg": "usuario inexistente"
+    }
+    return jsonify(response_body), 400
+
+
+@app.route('/user/<int:user_id>/favorites/planet/<int:planet_id>', methods=['POST'])
+def post_user_planet_favorites(user_id, planet_id):
+ 
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        response_body={
+        "msg": "usuario inexistente"
+        }
+        return jsonify(response_body), 400
+    planet = Planet.query.filter_by(id=planet_id).first()
+    if planet is None:
+        response_body={
+        "msg": "planeta inexistente"
+        }
+        return jsonify(response_body), 400
+    
+    favorites = Favorites.query.filter_by(user_id=user_id, planet_id = planet_id).first()
+    if favorites is not None:
+        response_body={
+            "msg": "este usuario ya cuenta con ese planeta en favoritos"
+        }
+        return jsonify(response_body), 400
+
+    new_favorites = Favorites(user_id=user_id, planet_id=planet_id)
+    db.session.add(new_favorites)
+    db.session.commit()
+
+    response_body={
+        "msg": "el planeta fue agregado a favoritos con exito"
+    }
+    return jsonify(response_body), 200
+
+#vehiculos favoritos
+@app.route('/user/<int:user_id>/favorites/vehicle/<int:vehicle_id>', methods=['POST'])
+def post_user_vehicle_favorites(user_id, vehicle_id):
+ 
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        response_body={
+        "msg": "usuario inexistente"
+        }
+        return jsonify(response_body), 400
+    vehicle = Vehicle.query.filter_by(id=vehicle_id).first()
+    if vehicle is None:
+        response_body={
+        "msg": "vehicle inexistente"
+        }
+        return jsonify(response_body), 400
+    
+    favorites = Favorites.query.filter_by(user_id=user_id, vehicle_id = vehicle_id).first()
+    if favorites is not None:
+        response_body={
+            "msg": "este usuario ya cuenta con ese vehiculo en favoritos"
+        }
+        return jsonify(response_body), 400
+
+    new_favorites = Favorites(user_id=user_id, vehicle_id=vehicle_id)
+    db.session.add(new_favorites)
+    db.session.commit()
+
+    response_body={
+        "msg": "el vehiculo fue agregado a favoritos con exito"
+    }
+    return jsonify(response_body), 200
+
+#personajes favoritos
+@app.route('/user/<int:user_id>/favorites/character/<int:character_id>', methods=['POST'])
+def post_user_character_favorites(user_id, character_id):
+ 
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        response_body={
+        "msg": "usuario inexistente"
+        }
+        return jsonify(response_body), 400
+    character = Character.query.filter_by(id=character_id).first()
+    if character is None:
+        response_body={
+        "msg": "personaje inexistente"
+        }
+        return jsonify(response_body), 400
+    
+    favorites = Favorites.query.filter_by(user_id=user_id, character_id = character_id).first()
+    if favorites is not None:
+        response_body={
+            "msg": "este usuario ya cuenta con ese personaje en favoritos"
+        }
+        return jsonify(response_body), 400
+
+    new_favorites = Favorites(user_id=user_id, character_id=character_id)
+    db.session.add(new_favorites)
+    db.session.commit()
+
+    response_body={
+        "msg": "el personaje fue agregado a favoritos con exito"
+    }
+    return jsonify(response_body), 200
+
+    #Delete favoritos
+    #Delete personaje de favoritos
+@app.route('/user/<int:user_id>/favorites/character/<int:character_id>', methods=['DELETE'])
+def delete_user_character_favorites(user_id, character_id):
+ 
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        response_body={
+        "msg": "usuario inexistente"
+        }
+        return jsonify(response_body), 400
+    character = Character.query.filter_by(id=character_id).first()
+    if character is None:
+        response_body={
+        "msg": "personaje inexistente"
+        }
+        return jsonify(response_body), 400
+    
+    favorites = Favorites.query.filter_by(user_id=user_id, character_id = character_id).first()
+    if favorites is None:
+        response_body={
+            "msg": "este usuario ya no cuenta con ese personaje en favoritos"
+        }
+        return jsonify(response_body), 400
+
+    
+    db.session.delete(favorites)
+    db.session.commit()
+
+    response_body={
+        "msg": "el personaje fue eliminado de favoritos con exito"
+    }
+    return jsonify(response_body), 200
+
+#Delete planet de favoritos
+@app.route('/user/<int:user_id>/favorites/planet/<int:planet_id>', methods=['DELETE'])
+def delete_user_planet_favorites(user_id, planet_id):
+ 
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        response_body={
+    "msg": "usuario inexistente"
+        }
+        return jsonify(response_body), 400
+    planet = Planet.query.filter_by(id=planet_id).first()
+    if planet is None:
+        response_body={
+        "msg": "planeta inexistente"
+        }
+        return jsonify(response_body), 400
+    
+    favorites = Favorites.query.filter_by(user_id=user_id, planet_id = planet_id).first()
+    if favorites is None:
+        response_body={
+            "msg": "este usuario ya no cuenta con ese planeta en favoritos"
+        }
+        return jsonify(response_body), 400
+
+    
+    db.session.delete(favorites)
+    db.session.commit()
+
+    response_body={
+        "msg": "el planeta fue eliminado de favoritos con exito"
+    }
+    return jsonify(response_body), 200
+
 #terminan los endpoints
 
 # this only runs if `$ python src/app.py` is executed
