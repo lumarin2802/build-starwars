@@ -128,9 +128,11 @@ def get_user_favorites(user_id):
     }
     return jsonify(response_body), 400
 
+#Planeta favorito 
+@app.route('/user/<int:user_id>/favorites/planet', methods=['POST'])
+def post_user_planet_favorites(user_id):
+    body = json.loads(request.data)
 
-@app.route('/user/<int:user_id>/favorites/planet/<int:planet_id>', methods=['POST'])
-def post_user_planet_favorites(user_id, planet_id):
  
     user = User.query.filter_by(id=user_id).first()
     if user is None:
@@ -138,21 +140,22 @@ def post_user_planet_favorites(user_id, planet_id):
         "msg": "usuario inexistente"
         }
         return jsonify(response_body), 400
-    planet = Planet.query.filter_by(id=planet_id).first()
+
+    planet = Planet.query.filter_by(id=body["planet_id"]).first()
     if planet is None:
         response_body={
         "msg": "planeta inexistente"
         }
         return jsonify(response_body), 400
     
-    favorites = Favorites.query.filter_by(user_id=user_id, planet_id = planet_id).first()
+    favorites = Favorites.query.filter_by(user_id=user_id, planet_id = body[planet_id]).first()
     if favorites is not None:
         response_body={
-            "msg": "este usuario ya cuenta con ese planeta en favoritos"
+            "msg": "este usuario ya tiene este planeta en favoritos"
         }
         return jsonify(response_body), 400
 
-    new_favorites = Favorites(user_id=user_id, planet_id=planet_id)
+    new_favorites = Favorites(user_id=user_id, planet_id= body[planet_id])
     db.session.add(new_favorites)
     db.session.commit()
 
@@ -162,30 +165,30 @@ def post_user_planet_favorites(user_id, planet_id):
     return jsonify(response_body), 200
 
 #vehiculos favoritos
-@app.route('/user/<int:user_id>/favorites/vehicle/<int:vehicle_id>', methods=['POST'])
-def post_user_vehicle_favorites(user_id, vehicle_id):
- 
+@app.route('/user/<int:user_id>/favorites/vehicle/', methods=['POST'])
+def post_user_vehicle_favorites(user_id):
+    body =json.loads(request.data)
     user = User.query.filter_by(id=user_id).first()
     if user is None:
         response_body={
         "msg": "usuario inexistente"
         }
         return jsonify(response_body), 400
-    vehicle = Vehicle.query.filter_by(id=vehicle_id).first()
+    vehicle = Vehicle.query.filter_by(vehicle_id=body["vehicle_id"]).first()
     if vehicle is None:
         response_body={
         "msg": "vehicle inexistente"
         }
         return jsonify(response_body), 400
     
-    favorites = Favorites.query.filter_by(user_id=user_id, vehicle_id = vehicle_id).first()
+    favorites = Favorites.query.filter_by(user_id=user_id, vehicle_id = body["vehicle_id"]).first()
     if favorites is not None:
         response_body={
-            "msg": "este usuario ya cuenta con ese vehiculo en favoritos"
+            "msg": "este usuario ya tiene ese vehiculo en favoritos"
         }
         return jsonify(response_body), 400
 
-    new_favorites = Favorites(user_id=user_id, vehicle_id=vehicle_id)
+    new_favorites = Favorites(user_id=user_id, vehicle_id=body["vehicle_id"])
     db.session.add(new_favorites)
     db.session.commit()
 
@@ -195,30 +198,31 @@ def post_user_vehicle_favorites(user_id, vehicle_id):
     return jsonify(response_body), 200
 
 #personajes favoritos
-@app.route('/user/<int:user_id>/favorites/character/<int:character_id>', methods=['POST'])
-def post_user_character_favorites(user_id, character_id):
- 
+@app.route('/user/<int:user_id>/favorites/character/', methods=['POST'])
+def post_user_character_favorites(user_id):
+    body =json.loads(request.data)
+
     user = User.query.filter_by(id=user_id).first()
     if user is None:
         response_body={
         "msg": "usuario inexistente"
         }
         return jsonify(response_body), 400
-    character = Character.query.filter_by(id=character_id).first()
+    character = Character.query.filter_by(id=body["character_id"]).first()
     if character is None:
         response_body={
         "msg": "personaje inexistente"
         }
         return jsonify(response_body), 400
     
-    favorites = Favorites.query.filter_by(user_id=user_id, character_id = character_id).first()
+    favorites = Favorites.query.filter_by(user_id=user_id, character_id = body["character_id"]).first()
     if favorites is not None:
         response_body={
             "msg": "este usuario ya cuenta con ese personaje en favoritos"
         }
         return jsonify(response_body), 400
 
-    new_favorites = Favorites(user_id=user_id, character_id=character_id)
+    new_favorites = Favorites(user_id=user_id, character_id=body["character_id"])
     db.session.add(new_favorites)
     db.session.commit()
 
