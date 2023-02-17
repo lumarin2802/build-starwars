@@ -233,26 +233,28 @@ def post_user_character_favorites(user_id):
 
     #Delete favoritos
     #Delete personaje de favoritos
-@app.route('/user/<int:user_id>/favorites/character/<int:character_id>', methods=['DELETE'])
-def delete_user_character_favorites(user_id, character_id):
+@app.route('/user/<int:user_id>/favorites/character/', methods=['DELETE'])
+def delete_user_character_favorites(user_id):
+    body = json.loads(request.data)
  
-    user = User.query.filter_by(id=user_id).first()
+    user = User.query.filter_by(user_id=user_id).first()
     if user is None:
         response_body={
         "msg": "usuario inexistente"
         }
         return jsonify(response_body), 400
-    character = Character.query.filter_by(id=character_id).first()
+
+    character = Character.query.filter_by(id=body["character_id"]).first()
     if character is None:
         response_body={
         "msg": "personaje inexistente"
         }
         return jsonify(response_body), 400
     
-    favorites = Favorites.query.filter_by(user_id=user_id, character_id = character_id).first()
+    favorites = Favorites.query.filter_by(user_id=user_id, character_id = body ["character_id"]).first()
     if favorites is None:
         response_body={
-            "msg": "este usuario ya no cuenta con ese personaje en favoritos"
+            "msg": "este usuario ya no tiene ese personaje en favoritos"
         }
         return jsonify(response_body), 400
 
@@ -266,26 +268,26 @@ def delete_user_character_favorites(user_id, character_id):
     return jsonify(response_body), 200
 
 #Delete planet de favoritos
-@app.route('/user/<int:user_id>/favorites/planet/<int:planet_id>', methods=['DELETE'])
-def delete_user_planet_favorites(user_id, planet_id):
- 
+@app.route('/user/<int:user_id>/favorites/planet/', methods=['DELETE'])
+def delete_user_planet_favorites(user_id):
+    body = json.loads(request.data)
     user = User.query.filter_by(id=user_id).first()
     if user is None:
         response_body={
     "msg": "usuario inexistente"
         }
         return jsonify(response_body), 400
-    planet = Planet.query.filter_by(id=planet_id).first()
+    planet = Planet.query.filter_by(id=body ["planet_id"]).first()
     if planet is None:
         response_body={
         "msg": "planeta inexistente"
         }
         return jsonify(response_body), 400
     
-    favorites = Favorites.query.filter_by(user_id=user_id, planet_id = planet_id).first()
+    favorites = Favorites.query.filter_by(user_id=user_id, planet_id = body["planet_id"]).first()
     if favorites is None:
         response_body={
-            "msg": "este usuario ya no cuenta con ese planeta en favoritos"
+            "msg": "este usuario ya no tiene ese planeta en favoritos"
         }
         return jsonify(response_body), 400
 
